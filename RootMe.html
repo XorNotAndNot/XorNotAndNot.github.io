@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generic Page - Massively by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="/writeups/RootMe.html" class="logo">RootMe</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Portfolio</a></li>
+                            <li><a href="writeups.html">Writeups</a></li>
+                            <li class="active"><a href="RootMe.html">RootMe</a></li>						
+						</ul>
+						<ul class="icons">
+							<li><a href="https://github.com/XorNotAndNot" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+                
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>THM Challnge: RootMe</h1>
+                                    <h3><em>NeroTer128</em></h3>
+                                    <br>
+                                
+								</header>
+								<div class="image main"><img src="images/1_9GgdAIrqHjdkGthYGbJhig (1).png" alt="" /></div>
+								
+							</section>
+                        <div>
+
+
+<p><span style="font-family:Tahoma,Geneva,sans-serif"><strong><em>note: commands are dependent on the individual. Your file locations may be different.</em></strong></span></p>
+
+<p><span style="font-size:16px"><span style="font-family:Tahoma,Geneva,sans-serif"><strong><em><u>Summary|<br></u></em></strong></span></span>
+<span style="font-size:14px"><span style="font-family:Tahoma,Geneva,sans-serif">This challenge has the user scan for the web service, discover a file upload vulnerability for Apache 2.4.29, upload a reverse shell and listen to it to establish a connection, then utilize a python SUID escalation technique to gain access to a root shell.</span></span></p>
+
+<p><span style="font-size:16px"><span style="font-family:Tahoma,Geneva,sans-serif"><u><em><strong>Step Two: Scans|<br></strong></em></u></span></span>
+<span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">Starting off with a nmap scan on the service versions and open ports, we see that the machine has an open http port. Command: `nmap -sC -sV -O 10.10.183.123 -T 3`<br></span><img alt="" src="https://github.com/XorNotAndNot/XorNotAndNot.github.io/blob/main/writeups/images/rootme/nmap.png" /><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802112622-1.png" style="height:202px; width:643px" /></span></p>
+
+<p><span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">Now to scan for directories. In this case, I will be using Gobuster. Command: `/gobuster dir -u http://10.10.183.123 -w /usr/share/wordlists/dirb/common.txt`<br></span><img alt="" src="https://github.com/XorNotAndNot/XorNotAndNot.github.io/blob/main/writeups/images/rootme/gobuster.png" /><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113015-2.png" style="height:354px; width:643px" /></span></p>
+
+<p><span style="font-size:16px"><span style="font-family:Tahoma,Geneva,sans-serif"><em><u><strong>Step Two: Checking stuff out|<br></strong></u></em> </span></span>
+
+<span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">The gobuster scan gave an odd directory: /panel/. With this in mind, checking out the directory on http:// 10.10.183.123/panel/ gives this page:</span><img alt="" src="https://github.com/XorNotAndNot/XorNotAndNot.github.io/blob/main/writeups/images/rootme/nmap.png" /><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113107-3.png" style="height:382px; width:643px" /></span></p>
+
+<p><span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">Looking back at the nmap scan, the http service is Apache 2.4.29. After some testing with upload, it appears that php is not allowed, but phtml is. This could be utilized to upload a reverse shell with the .phtml extension. Using PentestMonkey&rsquo;s php reverse shell and changing the extension to .phtml, we get this screen suggesting the shell was uploaded.<br></span><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113201-4.png" style="height:391px; width:643px" /></span></p>
+
+<p><span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:16px"><em><u><strong>Step Three: Getting Access|<br></strong></u></em></span>
+
+<span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">Alright, so there&rsquo;s a hyperlink to the uploaded file path. First, let&rsquo;s set up a listener with `nc -lnvp 1234`. Next, click the link and check the listener again. Success. From here, let&rsquo;s check who we are and get our user flag.<br></span></span>
+
+<span style="font-family:Tahoma,Geneva,sans-serif"><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113330-6.png" style="height:91px; width:483px" /></span>
+
+<br><span style="font-family:Tahoma,Geneva,sans-serif"><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113345-8.png" style="height:107px; width:193px" /></span></p>
+
+<p><span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:16px"><em><u><strong>Step Four: Getting Root|<br></strong></u></em></span></span>
+
+<span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">Flag obtained! Good job. The next step is to see how we can escalate our privileges. The task hint suggests looking at SUID files we can access. Using `find / -user root -perm /4000`, we see that /usr/bin/python has a SUID bit. Let&rsquo;s test that out&hellip;<br></span></span>
+<span style="font-family:Tahoma,Geneva,sans-serif"><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113442-10.png" style="height:306px; width:494px" /></span></p>
+
+<p><span style="font-family:Tahoma,Geneva,sans-serif"><span style="font-size:14px">Looking at https://gtfobins.github.io/gtfobins/python/ for SUID escalation and adjusting it to the above path, we get this neat command: `/usr/bin/./python -c &#39;import os; os.execl(&quot;/bin/sh&quot;, &quot;sh&quot;, &quot;-p&quot;)&#39;`. This executes a shell that gives us root access thanks to the SUID bit. Now let&rsquo;s get that flag!<br></span></span>
+
+<span style="font-family:Tahoma,Geneva,sans-serif"><img src="https://ckeditor.com/apps/ckfinder/userfiles/files/image-20220802113537-12.png" style="height:196px; width:632px" /></span></p>
+
+                        </div>
+						
+                      
+
+				
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
